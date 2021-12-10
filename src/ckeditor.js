@@ -52,7 +52,6 @@ import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
-import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhistory.js';
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
 import SpecialCharactersArrows from '@ckeditor/ckeditor5-special-characters/src/specialcharactersarrows.js';
 import SpecialCharactersCurrency from '@ckeditor/ckeditor5-special-characters/src/specialcharacterscurrency.js';
@@ -76,49 +75,6 @@ import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
-
-class RevisionHistoryAdapter {
-	static get requires() {
-		return [ 'RevisionHistory' ];
-	}
-
-	constructor( editor ) {
-		this.editor = editor;
-	}
-
-	init() {
-		const editor = this.editor;
-		const revisionHistory = editor.plugins.get( 'RevisionHistory' );
-		const revisionsData = [];
-
-		revisionHistory.adapter = {
-			getRevisions: async () => {
-				const revisionsNoData = revisionsData.map( revisionData => {
-					const filtered = { ...revisionData };
-
-					delete filtered.data;
-
-					return filtered;
-				} );
-
-				return revisionsNoData;
-			},
-			getRevision: async ( { revisionId } ) => {
-				return revisionsData.find( data => data.id == revisionId );
-			},
-			updateRevision: async revisionData => {
-				const revision = revisionsData.find( data => data.id == revisionData.id );
-
-				for ( const i in revisionData ) {
-					revision[ i ] = revisionData[ i ];
-				}
-			},
-			addRevision: async revisionData => {
-				revisionsData.push( revisionData );
-			}
-		};
-	}
-}
 
 class Editor extends ClassicEditor {}
 
@@ -173,7 +129,6 @@ Editor.builtinPlugins = [
 	Paragraph,
 	PasteFromOffice,
 	RemoveFormat,
-	RevisionHistory,
 	SpecialCharacters,
 	SpecialCharactersArrows,
 	SpecialCharactersCurrency,
@@ -196,7 +151,6 @@ Editor.builtinPlugins = [
 	TodoList,
 	Underline,
 	WordCount,
-	RevisionHistoryAdapter
 ];
 
 export default { Editor, EditorWatchdog };
